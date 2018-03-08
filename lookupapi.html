@@ -1,0 +1,880 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The lookupapi Application &mdash; lookupproxy  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="lookupproxy  documentation" href="index.html"/>
+        <link rel="prev" title="The lookupproxy project" href="lookupproxy.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> lookupproxy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lookupproxy.html">The lookupproxy project</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The lookupapi Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.defaultsettings">Default settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.views">Views and serializers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.authentication">Authentication and permissions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.inspectors">Extensions to drf-yasg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.ibis">Accessing the Lookup API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.urls">Default URL routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lookupapi.apps">Application configuration</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">lookupproxy</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The lookupapi Application</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lookupapi.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-lookupapi-application">
+<h1>The lookupapi Application<a class="headerlink" href="#the-lookupapi-application" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">lookupapi</span></code> application provides a REST-y API which proxies the
+University of Cambridge <a class="reference external" href="https://help.uis.cam.ac.uk/email-telephony-and-collaboration/map-collaborative-services/lookup/ws">Lookup API</a>.
+Currently only the anonymous API is proxied but access to the API is protected
+by requiring an OAuth2 token with the appropriate scopes
+(<a class="reference internal" href="#lookupapi.views.REQUIRED_SCOPES" title="lookupapi.views.REQUIRED_SCOPES"><code class="xref py py-attr docutils literal notranslate"><span class="pre">lookupapi.views.REQUIRED_SCOPES</span></code></a>). The OAuth2 token is verified by
+means of a third-party OAuth2 <a class="reference external" href="https://tools.ietf.org/html/rfc7662">token introspection</a> endpoint.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Add the lookupapi application to your <code class="docutils literal notranslate"><span class="pre">INSTALLED_APPS</span></code> configuration as usual.
+Make sure to configure the various <code class="docutils literal notranslate"><span class="pre">LOOKUP_API_OAUTH2_...</span></code> settings.</p>
+</div>
+<div class="section" id="module-lookupapi.defaultsettings">
+<span id="default-settings"></span><h2>Default settings<a class="headerlink" href="#module-lookupapi.defaultsettings" title="Permalink to this headline">¶</a></h2>
+<p>Default settings values for the <code class="xref py py-mod docutils literal notranslate"><span class="pre">lookupapi</span></code> application.</p>
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_HOST">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_ENDPOINT_HOST</code><em class="property"> = 'lookup-test.csx.cam.ac.uk'</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_HOST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hostname of proxied Lookup API endpoint. This is usually one of “lookup-test.csx.cam.ac.uk” or
+“www.lookup.cam.ac.uk” depending on whether you want to interact with the test or production Lookup
+instances.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_PORT">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_ENDPOINT_PORT</code><em class="property"> = 443</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_PORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Port to connect to proxied Lookup API on. Defaults to the HTTPS service port 443.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_BASE">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_ENDPOINT_BASE</code><em class="property"> = ''</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_BASE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base path for proxied Lookup API. If using the deployed test or production instances this should be
+the empty string.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_VERIFY">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_ENDPOINT_VERIFY</code><em class="property"> = True</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_ENDPOINT_VERIFY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify whether the certificate presented by the proxied Lookup API should be checked. Unless you
+are extremely sure in what you are doing, set this to True.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_OAUTH2_CLIENT_ID">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_OAUTH2_CLIENT_ID</code><em class="property"> = None</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_OAUTH2_CLIENT_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>OAuth2 client id which the API server uses to identify itself to the OAuth2 token introspection
+endpoint.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_OAUTH2_CLIENT_SECRET">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_OAUTH2_CLIENT_SECRET</code><em class="property"> = None</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_OAUTH2_CLIENT_SECRET" title="Permalink to this definition">¶</a></dt>
+<dd><p>OAuth2 client secret which the API server uses to identify itself to the OAuth2 token introspection
+endpoint.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_OAUTH2_TOKEN_URL">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_OAUTH2_TOKEN_URL</code><em class="property"> = None</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_OAUTH2_TOKEN_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL of the OAuth2 token endpoint the API server uses to request an authorisation token to perform
+OAuth2 token introspection.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_OAUTH2_INTROSPECT_URL">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_OAUTH2_INTROSPECT_URL</code><em class="property"> = None</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_OAUTH2_INTROSPECT_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL of the OAuth2 token introspection endpoint. The API server will first identify itself to the
+OAuth2 token endpoint and request an access token for this endpoint.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="lookupapi.defaultsettings.LOOKUP_API_OAUTH2_INTROSPECT_SCOPES">
+<code class="descclassname">lookupapi.defaultsettings.</code><code class="descname">LOOKUP_API_OAUTH2_INTROSPECT_SCOPES</code><em class="property"> = None</em><a class="headerlink" href="#lookupapi.defaultsettings.LOOKUP_API_OAUTH2_INTROSPECT_SCOPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of OAuth2 scopes the API server will request for the token it will use with the token
+introspection endpoint.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lookupapi.views">
+<span id="views-and-serializers"></span><h2>Views and serializers<a class="headerlink" href="#module-lookupapi.views" title="Permalink to this headline">¶</a></h2>
+<p>Views for <code class="xref py py-mod docutils literal notranslate"><span class="pre">lookupapi</span></code>.</p>
+<dl class="data">
+<dt id="lookupapi.views.REQUIRED_SCOPES">
+<code class="descclassname">lookupapi.views.</code><code class="descname">REQUIRED_SCOPES</code><em class="property"> = ['lookup:anonymous']</em><a class="headerlink" href="#lookupapi.views.REQUIRED_SCOPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of OAuth2 scopes requires to access the Lookup API.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.ViewPermissionsMixin">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">ViewPermissionsMixin</code><a class="headerlink" href="#lookupapi.views.ViewPermissionsMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mixin class which specifies the authentication and permissions for all API endpoints.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.PersonFetchAttributes">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">PersonFetchAttributes</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.PersonFetchAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>All valid attributes for a person.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.PersonFetchAttributes.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.PersonFetchAttributes.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.AttributeSchemeListSerializer" title="lookupapi.serializers.AttributeSchemeListSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.AttributeSchemeListSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.views.PersonFetchAttributes.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.PersonFetchAttributes.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object the view is displaying.</p>
+<p>You may want to override this if you need to provide non-standard
+queryset lookups.  Eg if objects are referenced using multiple
+keyword arguments in the url conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.InstitutionFetchAttributes">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">InstitutionFetchAttributes</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.InstitutionFetchAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>All valid attributes for a institution.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.InstitutionFetchAttributes.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.InstitutionFetchAttributes.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.AttributeSchemeListSerializer" title="lookupapi.serializers.AttributeSchemeListSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.AttributeSchemeListSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.views.InstitutionFetchAttributes.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.InstitutionFetchAttributes.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object the view is displaying.</p>
+<p>You may want to override this if you need to provide non-standard
+queryset lookups.  Eg if objects are referenced using multiple
+keyword arguments in the url conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.PersonList">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">PersonList</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.PersonList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for people using a free text query string. This is the same search function that is used
+in the Lookup web application. By default, only a few basic details about each person are
+returned, but the optional fetch parameter may be used to fetch additional attributes or
+references.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.PersonList.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.PersonList.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.PersonListResultsSerializer" title="lookupapi.serializers.PersonListResultsSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.PersonListResultsSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lookupapi.views.PersonList.count_query_keys">
+<code class="descname">count_query_keys</code><em class="property"> = ['query', 'approxMatches', 'includeCancelled', 'misStatus', 'attributes']</em><a class="headerlink" href="#lookupapi.views.PersonList.count_query_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query keys which are used by both searchCount and search.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lookupapi.views.PersonList.full_query_keys">
+<code class="descname">full_query_keys</code><em class="property"> = ['offset', 'limit', 'fetch', 'orderBy']</em><a class="headerlink" href="#lookupapi.views.PersonList.full_query_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query keys which are used only by search.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.Person">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">Person</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Person" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information on a person by scheme and identifier within that scheme. The scheme is
+usually “crsid” and the identifier is usually that person’s crsid.</p>
+<p>If the scheme is “mock” then data from the test user mug99 is returned with the
+corresponding identifier from the API call.</p>
+<p>If the scheme “token” and identifier “self” is used then if the user has been authenticated
+it will return the lookup data of the authenticated user.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.Person.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.Person.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.PersonSerializer" title="lookupapi.serializers.PersonSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.PersonSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.views.Person.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Person.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object the view is displaying.</p>
+<p>You may want to override this if you need to provide non-standard
+queryset lookups.  Eg if objects are referenced using multiple
+keyword arguments in the url conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.Group">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information on a group by groupid.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.Group.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.Group.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.GroupSerializer" title="lookupapi.serializers.GroupSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.GroupSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.views.Group.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Group.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object the view is displaying.</p>
+<p>You may want to override this if you need to provide non-standard
+queryset lookups.  Eg if objects are referenced using multiple
+keyword arguments in the url conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.InstitutionList">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">InstitutionList</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.InstitutionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all institutions known to Lookup.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.InstitutionList.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.InstitutionList.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.InstitutionListResultsSerializer" title="lookupapi.serializers.InstitutionListResultsSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.InstitutionListResultsSerializer</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.Institution">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">Institution</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Institution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information on an institution by instid.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.Institution.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.Institution.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.InstitutionSerializer" title="lookupapi.serializers.InstitutionSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.InstitutionSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.views.Institution.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Institution.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object the view is displaying.</p>
+<p>You may want to override this if you need to provide non-standard
+queryset lookups.  Eg if objects are referenced using multiple
+keyword arguments in the url conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.views.Health">
+<em class="property">class </em><code class="descclassname">lookupapi.views.</code><code class="descname">Health</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a HTTP 200 response when the application is running. Can be used as a readiness
+probe.</p>
+<dl class="attribute">
+<dt id="lookupapi.views.Health.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#lookupapi.views.Health.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lookupapi.serializers.HealthSerializer" title="lookupapi.serializers.HealthSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">lookupapi.serializers.HealthSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.views.Health.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.views.Health.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object the view is displaying.</p>
+<p>You may want to override this if you need to provide non-standard
+queryset lookups.  Eg if objects are referenced using multiple
+keyword arguments in the url conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lookupapi.serializers"></span><p>Django REST framework “serializers” for Lookup object.</p>
+<dl class="class">
+<dt id="lookupapi.serializers.Base64Field">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">Base64Field</code><span class="sig-paren">(</span><em>read_only=False</em>, <em>write_only=False</em>, <em>required=None</em>, <em>default=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>initial=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>source=None</em>, <em>label=None</em>, <em>help_text=None</em>, <em>style=None</em>, <em>error_messages=None</em>, <em>validators=None</em>, <em>allow_null=False</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.Base64Field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialises binary data as base64.</p>
+<dl class="method">
+<dt id="lookupapi.serializers.Base64Field.to_representation">
+<code class="descname">to_representation</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.Base64Field.to_representation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the <em>outgoing</em> native value into primitive data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.serializers.Base64Field.to_internal_value">
+<code class="descname">to_internal_value</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.Base64Field.to_internal_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the <em>incoming</em> primitive data into a native value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.FetchParametersSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">FetchParametersSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.FetchParametersSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialise fetch parameters from a query string.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.SearchParametersSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">SearchParametersSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.SearchParametersSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialise search parameters from a query string.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.InstitutionListParametersSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">InstitutionListParametersSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.InstitutionListParametersSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialise parameters the for the institution list endpoing.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.AttributeSchemeSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">AttributeSchemeSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.AttributeSchemeSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisAttributeScheme.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.PersonHyperlink">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">PersonHyperlink</code><span class="sig-paren">(</span><em>view_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.PersonHyperlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field which can construct the appropriate link to a Person resource.</p>
+<dl class="method">
+<dt id="lookupapi.serializers.PersonHyperlink.get_url">
+<code class="descname">get_url</code><span class="sig-paren">(</span><em>obj</em>, <em>view_name</em>, <em>request</em>, <em>format</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.PersonHyperlink.get_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an object, return the URL that hyperlinks to the object.</p>
+<p>May raise a <cite>NoReverseMatch</cite> if the <cite>view_name</cite> and <cite>lookup_field</cite>
+attributes are not configured to correctly match the URL conf.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.PersonHyperlinkSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">PersonHyperlinkSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.PersonHyperlinkSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hyperlink-only serializer for IbisPerson objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.GroupHyperlinkSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">GroupHyperlinkSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.GroupHyperlinkSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hyperlink-only serializer for IbisGroup objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.InstitutionHyperlinkSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">InstitutionHyperlinkSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.InstitutionHyperlinkSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hyperlink-only serializer for IbisInstitution objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.IdentifierSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">IdentifierSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.IdentifierSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisIdentifier objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.PersonSummarySerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">PersonSummarySerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.PersonSummarySerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisPerson objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.GroupSummarySerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">GroupSummarySerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.GroupSummarySerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Summary serializer for IbisGroup objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.InstitutionSummarySerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">InstitutionSummarySerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.InstitutionSummarySerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Summary serializer for IbisInstitution.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.AttributeSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">AttributeSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.AttributeSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisAttribute objects.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.ContactPhoneNumberSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">ContactPhoneNumberSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.ContactPhoneNumberSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisContactPhoneNumber.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.ContactWebPageSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">ContactWebPageSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.ContactWebPageSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisContactWebPage.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.ContactRowSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">ContactRowSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.ContactRowSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisContactRow.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.InstitutionSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">InstitutionSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.InstitutionSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisInstitution.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.GroupSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">GroupSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.GroupSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisGroup.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.PersonSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">PersonSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.PersonSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for IbisPerson.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.PersonListResultsSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">PersonListResultsSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.PersonListResultsSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for person list results.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.AttributeSchemeListSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">AttributeSchemeListSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.AttributeSchemeListSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for attribute scheme lists.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.InstitutionListResultsSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">InstitutionListResultsSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.InstitutionListResultsSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for person list results.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lookupapi.serializers.HealthSerializer">
+<em class="property">class </em><code class="descclassname">lookupapi.serializers.</code><code class="descname">HealthSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.serializers.HealthSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Health check response.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lookupapi.authentication">
+<span id="authentication-and-permissions"></span><h2>Authentication and permissions<a class="headerlink" href="#module-lookupapi.authentication" title="Permalink to this headline">¶</a></h2>
+<p>OAuth2 authentication for Django REST Framework views.</p>
+<dl class="class">
+<dt id="lookupapi.authentication.OAuth2TokenAuthentication">
+<em class="property">class </em><code class="descclassname">lookupapi.authentication.</code><code class="descname">OAuth2TokenAuthentication</code><a class="headerlink" href="#lookupapi.authentication.OAuth2TokenAuthentication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Django REST framework authentication which accepts an OAuth2 token as a Bearer token and
+verifies it via the token introspection endpoint. If verification fails, the token is ignored.</p>
+<p>Sets request.auth to the parsed JSON response from the token introspection endpoint.</p>
+<p><strong>TODO:</strong> Perform some token verification caching.</p>
+<dl class="method">
+<dt id="lookupapi.authentication.OAuth2TokenAuthentication.authenticate">
+<code class="descname">authenticate</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.authentication.OAuth2TokenAuthentication.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticate the request and return a two-tuple of (user, token).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.authentication.OAuth2TokenAuthentication.validate_token">
+<code class="descname">validate_token</code><span class="sig-paren">(</span><em>token</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.authentication.OAuth2TokenAuthentication.validate_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method which validates a Bearer token and returns the parsed response from the
+introspection endpoint if the token is valid. If the token is invalid, None is returned.</p>
+<p>A valid token must be active, be issued in the past and expire in the future.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lookupapi.permissions"></span><p>OAuth2 token-based permissions for Django REST Framework views.</p>
+<dl class="class">
+<dt id="lookupapi.permissions.HasScopesPermission">
+<em class="property">class </em><code class="descclassname">lookupapi.permissions.</code><code class="descname">HasScopesPermission</code><a class="headerlink" href="#lookupapi.permissions.HasScopesPermission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Django REST framework permission which requires that the scopes granted to an OAuth2 token are
+a superset of those required for the view. The requires scopes are specified by the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">required_scopes</span></code> attribute of the view class.</p>
+<dl class="method">
+<dt id="lookupapi.permissions.HasScopesPermission.has_permission">
+<code class="descname">has_permission</code><span class="sig-paren">(</span><em>request</em>, <em>view</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.permissions.HasScopesPermission.has_permission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <cite>True</cite> if permission is granted, <cite>False</cite> otherwise.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lookupapi.inspectors">
+<span id="extensions-to-drf-yasg"></span><h2>Extensions to drf-yasg<a class="headerlink" href="#module-lookupapi.inspectors" title="Permalink to this headline">¶</a></h2>
+<p>Extensions to <a class="reference external" href="https://drf-yasg.readthedocs.io/">drf-yasg</a>.</p>
+<dl class="class">
+<dt id="lookupapi.inspectors.SwaggerAutoSchema">
+<em class="property">class </em><code class="descclassname">lookupapi.inspectors.</code><code class="descname">SwaggerAutoSchema</code><span class="sig-paren">(</span><em>view</em>, <em>path</em>, <em>method</em>, <em>components</em>, <em>request</em>, <em>overrides</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.inspectors.SwaggerAutoSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>An extension to the <code class="xref py py-class docutils literal notranslate"><span class="pre">drf_yasg.inspectors.SwaggerAutoSchema</span></code> class which knows about a
+few more Operation properties.</p>
+<dl class="attribute">
+<dt id="lookupapi.inspectors.SwaggerAutoSchema.extra_properties">
+<code class="descname">extra_properties</code><em class="property"> = ['security']</em><a class="headerlink" href="#lookupapi.inspectors.SwaggerAutoSchema.extra_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional properties which may be set on operations. Prefix the properties with <code class="docutils literal notranslate"><span class="pre">operation_</span></code>
+and pass them as additional keyword arguments to <code class="xref py py-func docutils literal notranslate"><span class="pre">swagger_auto_schema()</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.inspectors.SwaggerAutoSchema.get_operation">
+<code class="descname">get_operation</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.inspectors.SwaggerAutoSchema.get_operation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an <code class="xref py py-class docutils literal notranslate"><span class="pre">Operation</span></code> for the given API endpoint (path, method).
+This includes query, body parameters and response schemas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>operation_keys</strong> (<em>tuple</em><em>[</em><em>str</em><em>]</em>) – an array of keys describing the hierarchical layout of this view in the API;
+e.g. <code class="docutils literal notranslate"><span class="pre">('snippets',</span> <span class="pre">'list')</span></code>, <code class="docutils literal notranslate"><span class="pre">('snippets',</span> <span class="pre">'retrieve')</span></code>, etc.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">openapi.Operation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lookupapi.ibis">
+<span id="accessing-the-lookup-api"></span><h2>Accessing the Lookup API<a class="headerlink" href="#module-lookupapi.ibis" title="Permalink to this headline">¶</a></h2>
+<p>Convenience functions for accessing Ibis (aka “Lookup”) APIs.</p>
+<dl class="function">
+<dt id="lookupapi.ibis.get_connection">
+<code class="descclassname">lookupapi.ibis.</code><code class="descname">get_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.get_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an IbisClientConnection instance based upon the current settings.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="#module-lookupapi.defaultsettings" title="lookupapi.defaultsettings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">defaultsettings</span></code></a> module.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="lookupapi.ibis.get_person_methods">
+<code class="descclassname">lookupapi.ibis.</code><code class="descname">get_person_methods</code><span class="sig-paren">(</span><em>connection=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.get_person_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a PersonMethods instance for the specified IbisClientConnection. If the connection is
+None then <a class="reference internal" href="#lookupapi.ibis.get_connection" title="lookupapi.ibis.get_connection"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_connection()</span></code></a> is used to get a connection.</p>
+<p>The returned instance has all of its callable attributes decorated with the
+<a class="reference internal" href="#lookupapi.ibis.ibis_exception_wrapper" title="lookupapi.ibis.ibis_exception_wrapper"><code class="xref py py-func docutils literal notranslate"><span class="pre">ibis_exception_wrapper()</span></code></a> decorator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lookupapi.ibis.get_group_methods">
+<code class="descclassname">lookupapi.ibis.</code><code class="descname">get_group_methods</code><span class="sig-paren">(</span><em>connection=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.get_group_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a GroupMethods instance for the specified IbisClientConnection. If the connection is
+None then <a class="reference internal" href="#lookupapi.ibis.get_connection" title="lookupapi.ibis.get_connection"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_connection()</span></code></a> is used to get a connection.</p>
+<p>The returned instance has all of its callable attributes decorated with the
+<a class="reference internal" href="#lookupapi.ibis.ibis_exception_wrapper" title="lookupapi.ibis.ibis_exception_wrapper"><code class="xref py py-func docutils literal notranslate"><span class="pre">ibis_exception_wrapper()</span></code></a> decorator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lookupapi.ibis.get_institution_methods">
+<code class="descclassname">lookupapi.ibis.</code><code class="descname">get_institution_methods</code><span class="sig-paren">(</span><em>connection=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.get_institution_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a InstitutionMethods instance for the specified IbisClientConnection. If the connection
+is None then <a class="reference internal" href="#lookupapi.ibis.get_connection" title="lookupapi.ibis.get_connection"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_connection()</span></code></a> is used to get a connection.</p>
+<p>The returned instance has all of its callable attributes decorated with the
+<a class="reference internal" href="#lookupapi.ibis.ibis_exception_wrapper" title="lookupapi.ibis.ibis_exception_wrapper"><code class="xref py py-func docutils literal notranslate"><span class="pre">ibis_exception_wrapper()</span></code></a> decorator.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="lookupapi.ibis.IbisAPIException">
+<em class="property">exception </em><code class="descclassname">lookupapi.ibis.</code><code class="descname">IbisAPIException</code><span class="sig-paren">(</span><em>ibis_exception</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.IbisAPIException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A custom Django REST Framework <code class="xref py py-class docutils literal notranslate"><span class="pre">APIException</span></code> sub-class which marshals an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">IbisException</span></code> into a form the DRF can understand.</p>
+<dl class="method">
+<dt id="lookupapi.ibis.IbisAPIException.get_full_details">
+<code class="descname">get_full_details</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.IbisAPIException.get_full_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return both the message &amp; code parts of the error details.</p>
+<p>Eg. {“name”: [{“message”: “This field is required.”, “code”: “required”}]}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lookupapi.ibis.ibis_exception_wrapper">
+<code class="descclassname">lookupapi.ibis.</code><code class="descname">ibis_exception_wrapper</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.ibis.ibis_exception_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function or method decorator which intercepts <code class="xref py py-class docutils literal notranslate"><span class="pre">IbisException</span></code> errors and re-raises
+them as <a class="reference internal" href="#lookupapi.ibis.IbisAPIException" title="lookupapi.ibis.IbisAPIException"><code class="xref py py-class docutils literal notranslate"><span class="pre">IbisAPIException</span></code></a> instances.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lookupapi.urls">
+<span id="default-url-routing"></span><h2>Default URL routing<a class="headerlink" href="#module-lookupapi.urls" title="Permalink to this headline">¶</a></h2>
+<p>The default URL mapping for <code class="xref py py-mod docutils literal notranslate"><span class="pre">lookupapi</span></code> can be added to the global URL configuration in the
+following way:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">include</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># ...</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;lookupapi.urls&#39;</span><span class="p">)),</span>
+    <span class="c1"># ...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="lookupapi.urls.schema_view">
+<code class="descclassname">lookupapi.urls.</code><code class="descname">schema_view</code><a class="headerlink" href="#lookupapi.urls.schema_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lookupapi.apps">
+<span id="application-configuration"></span><h2>Application configuration<a class="headerlink" href="#module-lookupapi.apps" title="Permalink to this headline">¶</a></h2>
+<p>Django application configuration for <code class="xref py py-mod docutils literal notranslate"><span class="pre">lookupapi</span></code>.</p>
+<dl class="class">
+<dt id="lookupapi.apps.LookupAPIConfig">
+<em class="property">class </em><code class="descclassname">lookupapi.apps.</code><code class="descname">LookupAPIConfig</code><span class="sig-paren">(</span><em>app_name</em>, <em>app_module</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.apps.LookupAPIConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration for lookupapi.</p>
+<dl class="attribute">
+<dt id="lookupapi.apps.LookupAPIConfig.name">
+<code class="descname">name</code><em class="property"> = 'lookupapi'</em><a class="headerlink" href="#lookupapi.apps.LookupAPIConfig.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The short name for this application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lookupapi.apps.LookupAPIConfig.verbose_name">
+<code class="descname">verbose_name</code><em class="property"> = 'Lookup REST-ful API proxy'</em><a class="headerlink" href="#lookupapi.apps.LookupAPIConfig.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The human-readable verbose name for this application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lookupapi.apps.LookupAPIConfig.ready">
+<code class="descname">ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.apps.LookupAPIConfig.ready" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform application initialisation once the Django platform has been initialised.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lookupapi.systemchecks"></span><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">lookupapi</span></code> application ships with some custom system checks which ensure that the
+<code class="docutils literal notranslate"><span class="pre">LOOKUP_API_OAUTH2_...</span></code> settings have non-default values. These system checks are registered by
+the <a class="reference internal" href="#lookupapi.apps.LookupAPIConfig" title="lookupapi.apps.LookupAPIConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">LookupAPIConfig</span></code></a> class’s
+<a class="reference internal" href="#lookupapi.apps.LookupAPIConfig.ready" title="lookupapi.apps.LookupAPIConfig.ready"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ready()</span></code></a> method.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference external" href="https://docs.djangoproject.com/en/2.0/ref/checks/">Django System Check Framework</a>.</p>
+</div>
+<dl class="function">
+<dt id="lookupapi.systemchecks.api_credentials_check">
+<code class="descclassname">lookupapi.systemchecks.</code><code class="descname">api_credentials_check</code><span class="sig-paren">(</span><em>app_configs</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lookupapi.systemchecks.api_credentials_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>A system check ensuring that the OAuth2 credentials are specified.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://docs.djangoproject.com/en/2.0/ref/checks/">https://docs.djangoproject.com/en/2.0/ref/checks/</a></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="lookupproxy.html" class="btn btn-neutral" title="The lookupproxy project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, University of Cambridge Information Services.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
