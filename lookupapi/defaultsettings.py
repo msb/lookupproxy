@@ -7,7 +7,7 @@ Default settings values for the :py:mod:`lookupapi` application.
 # how this is achieved. This is a bit mucky but, at the moment, Django does not have a standard way
 # to specify default values for settings.  See: https://stackoverflow.com/questions/8428556/
 
-LOOKUP_API_ENDPOINT_HOST = 'lookup-test.csx.cam.ac.uk'
+LOOKUP_API_ENDPOINT_HOST = 'www.lookup.cam.ac.uk'
 """
 Hostname of proxied Lookup API endpoint. This is usually one of "lookup-test.csx.cam.ac.uk" or
 "www.lookup.cam.ac.uk" depending on whether you want to interact with the test or production Lookup
